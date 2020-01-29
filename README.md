@@ -25,3 +25,10 @@ The `build` command will transpile your JS included in the *blocks/* folder, and
 to the *dist/* folder. The `watch` command will sit in the terminal and wait for files to
 change, then run the `build` script.
 
+**OR, you could just ignore all this transpiling jazz. If all your users run a modern 
+browser, there's no need for it.**
+
+So instead, open up *gutenberg-starter-blocks.php* (or whatever you've renamed it to), and
+set the $js_compatibilty property to `false`. And then forget about it! The only handy
+thing you'll lose is automatic cache busting, as the transpilation script also does a
+version bump - but you can manually set this by updating the version number of your plugin.

@@ -10,6 +10,7 @@
  * @package GutenbergStarter
  */
 
+namespace GutenbergStarter;
 
 class Plugin {
 
@@ -21,7 +22,7 @@ class Plugin {
 	public static $build_version = null;
 
 	/**
-	 * Contents of package.json after class is instantiated.
+	 * Information about the plugin. Pulled from package.json if $js_compatibility is set to `true`
 	 *
 	 * @var array
 	 */
@@ -32,9 +33,18 @@ class Plugin {
 	 * 
 	 * @var boolean
 	 */
-	public $js_compatibility = true;
+	private $js_compatibility = true;
+
+	/**
+	 * A pointless bit of self-reference
+	 * 
+	 * @var object
+	 */
+	private static $instance = null;
 
 	public function __construct() {
+
+		self::$instance = $this;
 
 		add_action( 'admin_notices', array( $this, 'requirement_notices' ) );
 
@@ -42,9 +52,31 @@ class Plugin {
 			return;
 		}
 
-		$this->setup_package_info();
+		if ( $this->js_compatibility ) {
+
+			$this->setup_package_info();
 
 
+		} else {
+
+			$this->package = get_plugin_data( __FILE__ );
+
+			if ( ! empty( $this->package ) && ! empty( $this->package['Version'] ) ) {
+				self::$build_version = $this->package['Version'];
+			}
+
+		}
+
+
+	}
+
+	public static function instance() {
+
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new Plugin();
+		}
+
+		return self::$instance;
 	}
 
 	/**
@@ -114,6 +146,23 @@ class Plugin {
 
 	}
 
+	/**
+	 * Gets the absolute file path of where block javascript can be found
+	 */
+	public function js_path() {
+
+		return __DIR__ . ( $this->js_compatible ? '/dist' : '/blocks' );
+
+	}
+
+	/**
+	 * Gets the absolute url of where block javascript can be found
+	 */
+	public function js_uri() {
+
+		return plugins_url( $this->js_compatible ? '/dist' : '/blocks', __FILE__ );
+
+	}
 
 }
 
