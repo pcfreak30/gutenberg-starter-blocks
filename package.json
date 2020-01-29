@@ -1,0 +1,22 @@
+{
+	"name": "gutenberg-starter-blocks",
+	"version": "1.0.0",
+	"description": "Gutenberg Starter Blocks",
+	"scripts": {
+		"build": "babel blocks/**/*.js -d dist && npm version patch --no-git-tag-version",
+		"watch": "onchange blocks/**/*.js -- npm run build:js"
+	},
+	"author": "Paul Houser <paul@plaidpowered.com>",
+	"license": "GPL-3.0-or-later",
+	"dependencies": {
+		"@babel/cli": "^7.6.2",
+		"@babel/core": "^7.6.2",
+		"@babel/preset-env": "^7.6.2",
+		"@babel/preset-react": "^7.0.0",
+		"@wordpress/babel-preset-default": "^4.6.1",
+		"babel-plugin-inline-json-import": "^0.3.2",
+		"core-js": "^3.6.4",
+		"onchange": "^6.1.0"
+	},
+	"browserslist": "> 0.25%, not dead"
+}
