@@ -1,22 +1,34 @@
 {
 	"name": "gutenberg-starter-blocks",
-	"version": "1.0.0",
+	"version": "1.0.28",
 	"description": "Gutenberg Starter Blocks",
 	"scripts": {
-		"build": "babel blocks/**/*.js -d dist && npm version patch --no-git-tag-version",
-		"watch": "onchange blocks/**/*.js -- npm run build:js"
+		"i18n": "wp i18n make-pot . languages/gutenberg-starter.pot --domain=gutenberg-starter",
+		"crunch:css": "postcss blocks/**/*.css --base blocks --dir dist -u cssnano -m",
+		"build:css": "node-sass blocks/ --map -o blocks && postcss -u autoprefixer -r blocks/**/*.css --map && npm run crunch:css",
+		"build:js": "babel blocks/ -d dist/ --source-maps && npm version patch --no-git-tag-version",
+		"watch:js": "onchange blocks/**/*.js -- npm run build:js && npm version patch --no-git-tag-version",
+		"watch:css": "onchange blocks/**/*.scss -- npm run build:css && npm version patch --no-git-tag-version",
+		"watch": "parallelshell \"npm run watch:js\" \"npm run watch:css\"",
+		"build": "npm run build:css && npm run build:js"
 	},
 	"author": "Paul Houser <paul@plaidpowered.com>",
 	"license": "GPL-3.0-or-later",
 	"dependencies": {
-		"@babel/cli": "^7.6.2",
-		"@babel/core": "^7.6.2",
-		"@babel/preset-env": "^7.6.2",
+		"@babel/cli": "^7.8.3",
+		"@babel/core": "^7.8.3",
+		"@babel/preset-env": "^7.8.3",
 		"@babel/preset-react": "^7.0.0",
 		"@wordpress/babel-preset-default": "^4.6.1",
 		"babel-plugin-inline-json-import": "^0.3.2",
+		"autoprefixer": "^9.7.3",
 		"core-js": "^3.6.4",
-		"onchange": "^6.1.0"
+		"cssnano": "^4.1.10",
+		"node-sass": "^4.13.0",
+		"onchange": "^6.1.0",
+		"parallelshell": "github:darkguy2008/parallelshell#8fd83e2",
+		"postcss": "^7.0.25",
+		"postcss-cli": "^6.1.3"
 	},
 	"browserslist": "> 0.25%, not dead"
 }

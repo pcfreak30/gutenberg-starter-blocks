@@ -12,6 +12,11 @@
 
 namespace GutenbergStarter;
 
+/**
+ * None of the contents of this plugin file & declation have anything to do with Gutenberg,
+ * it's just a handy suite of tools that I use for every single plugin project. If you like
+ * them, feel free to reuse!
+ */
 class Plugin {
 
 	/**
@@ -22,22 +27,22 @@ class Plugin {
 	public static $build_version = null;
 
 	/**
-	 * Information about the plugin. Pulled from package.json if $js_compatibility is set to `true`
+	 * Information about the plugin. Pulled from package.json if $use_node is set to `true`
 	 *
 	 * @var array
 	 */
 	private $package = null;
 
 	/**
-	 * Set this to `false` to never use the transpiled version, if you don't want to install Node
-	 * 
+	 * Set this to `false` to never use the compiled JS & CSS, if you don't want to install Node
+	 *
 	 * @var boolean
 	 */
-	private $js_compatibility = true;
+	public static $use_node = true;
 
 	/**
 	 * A pointless bit of self-reference
-	 * 
+	 *
 	 * @var object
 	 */
 	private static $instance = null;
@@ -52,12 +57,15 @@ class Plugin {
 			return;
 		}
 
-		if ( $this->js_compatibility ) {
+		if ( self::$use_node ) {
 
 			$this->setup_package_info();
 
-
 		} else {
+
+			if ( ! function_exists('get_plugin_data') ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php' ;
+			}
 
 			$this->package = get_plugin_data( __FILE__ );
 
@@ -67,9 +75,13 @@ class Plugin {
 
 		}
 
+		require_once 'blocks/simple/simple.php';
 
 	}
 
+	/**
+	 * If for some reason we need to access the original class object non-statically
+	 */
 	public static function instance() {
 
 		if ( is_null( self::$instance ) ) {
@@ -149,18 +161,18 @@ class Plugin {
 	/**
 	 * Gets the absolute file path of where block javascript can be found
 	 */
-	public function js_path() {
+	public static function js_path() {
 
-		return __DIR__ . ( $this->js_compatible ? '/dist' : '/blocks' );
+		return __DIR__ . ( self::$use_node ? '/dist/' : '/blocks/' );
 
 	}
 
 	/**
 	 * Gets the absolute url of where block javascript can be found
 	 */
-	public function js_uri() {
+	public static function js_uri() {
 
-		return plugins_url( $this->js_compatible ? '/dist' : '/blocks', __FILE__ );
+		return plugins_url( self::$use_node ? '/dist/' : '/blocks/', __FILE__ );
 
 	}
 
