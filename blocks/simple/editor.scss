@@ -4,9 +4,29 @@
 
  .wp-block-gutenberg-starter-simple {
 	
-	&__image {
+	border: 1px solid #ccc;
+	padding: 10px;
+
+	&__header {
 		position: relative;
 		padding: 0;
+		background: #ccc;
+		color: #333;
+	}
+
+	h3 {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		margin: 0 !important;
+		line-height: 1em;
+		
+		width: calc( 100% - 20px );
+		padding: 10px;
+		background: rgba( white, 0.9 );
+		color: inherit;
+
+		z-index: 3;
 	}
 
 	figure {
@@ -14,11 +34,12 @@
 		padding: 50% 0 0 0;
 		margin: 0;
 
-		background: #ccc;
+		z-index: 1;
 
 		display: flex;
 		align-items: flex-end;
 		justify-content: flex-start;
+		color: inherit;
 
 		img {
 			position: absolute;
@@ -27,6 +48,7 @@
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
+			z-index: 1;
 		}
 
 		button {
@@ -34,6 +56,8 @@
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
+
+			z-index: 2;
 		}
 
 		figcaption {
@@ -43,11 +67,22 @@
 			width: 100%;
 			padding: 10px;
 			background: rgba( #efefef, 0.7 );
+			position: relative;
+
+			z-index: 2;
+			color: inherit;
+		}
+	}
+
+	&__header.image-is-dark {
+		color: white;
+		h3, figure figcaption {
+			background: none;
 		}
 	}
 
 	&__content {
-
+		margin: 10px;
 	}
 
 }

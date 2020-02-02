@@ -21,14 +21,20 @@ npm run build
 npm run watch
 ```
 
-The `build` command will transpile your JS included in the *blocks/* folder, and send it
-to the *dist/* folder. The `watch` command will sit in the terminal and wait for files to
+The `build` command will compile the SCSS and JS included in the *blocks/* folder, and send 
+it to the *dist/* folder. The `watch` command will sit in the terminal and wait for files to
 change, then run the `build` script.
 
 **OR, you could just ignore all this transpiling jazz. If all your users run a modern 
 browser, there's no need for it.**
 
 So instead, open up *gutenberg-starter-blocks.php* (or whatever you've renamed it to), and
-set the $js_compatibilty property to `false`. And then forget about it! The only handy
+set the $use_node property to `false`. And then forget about it! The only handy
 thing you'll lose is automatic cache busting, as the transpilation script also does a
 version bump - but you can manually set this by updating the version number of your plugin.
+
+## Blocks Included
+
+### Simple Block
+
+An image with title, caption, and descriptive text.

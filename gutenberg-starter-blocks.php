@@ -76,6 +76,7 @@ class Plugin {
 		}
 
 		require_once 'blocks/simple/simple.php';
+		require_once 'blocks/repeater/repeater.php';
 
 	}
 

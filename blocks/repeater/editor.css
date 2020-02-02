@@ -1,0 +1,42 @@
+/*
+ * CSS that will be loaded inside the WordPress editor
+ */
+.wp-block-gutenberg-starter-repeater .editor-inner-blocks .editor-block-list__layout {
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+  -webkit-box-align: stretch;
+          align-items: stretch;
+  -webkit-box-pack: start;
+          justify-content: flex-start; }
+  .wp-block-gutenberg-starter-repeater .editor-inner-blocks .editor-block-list__layout .block-list-appender {
+    -webkit-box-flex: 1;
+            flex: 1 1 100%; }
+
+.wp-block-gutenberg-starter-repeater .wp-block {
+  -webkit-box-flex: 0;
+          flex: 0 1 49%;
+  margin: 0;
+  align-self: stretch; }
+
+.wp-block-gutenberg-starter-repeater .wp-block + .wp-block {
+  margin-left: 2%; }
+
+.wp-block-gutenberg-starter-repeater[data-columns="2"] .wp-block:nth-child(2n+1) {
+  margin-left: 0; }
+
+.wp-block-gutenberg-starter-repeater[data-columns="3"] .wp-block {
+  -webkit-box-flex: 0;
+          flex: 0 1 32%; }
+
+.wp-block-gutenberg-starter-repeater[data-columns="3"] .wp-block:nth-child(3n+1) {
+  margin-left: 0; }
+
+.wp-block-gutenberg-starter-repeater[data-columns="4"] .wp-block {
+  -webkit-box-flex: 0;
+          flex: 0 1 23.5%; }
+
+.wp-block-gutenberg-starter-repeater[data-columns="4"] .wp-block:nth-child(4n+1) {
+  margin-left: 0; }
+
+/*# sourceMappingURL=editor.css.map */

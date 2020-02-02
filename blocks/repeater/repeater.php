@@ -5,7 +5,7 @@
 
 namespace GutenbergStarter;
 
-class SimpleBlock {
+class RepeaterBlock {
 
 	private $block_version;
 	private $editor_script;
@@ -28,8 +28,8 @@ class SimpleBlock {
 	function enqueue_frontend() {
 
 		wp_enqueue_style(
-			'simple-block',
-			$this->asset_uri . 'simple/frontend.css',
+			'repeater-block',
+			$this->asset_uri . 'repeater/frontend.css',
 			array(),
 			$this->block_version
 		);
@@ -39,24 +39,24 @@ class SimpleBlock {
 	function register_block() {
 
 		wp_register_script(
-			'simple-block-editor',
-			$this->asset_uri . 'simple/editor.js',
+			'repeater-block-editor',
+			$this->asset_uri . 'repeater/editor.js',
 			array( 'wp-blocks', 'wp-editor', 'wp-components', 'wp-element', 'wp-i18n' ),
 			$this->block_version
 		);
 
 		wp_register_style(
-			'simple-block-editor',
-			$this->asset_uri . 'simple/editor.css',
+			'repeater-block-editor',
+			$this->asset_uri . 'repeater/editor.css',
 			array(),
 			$this->block_version
 		);
 
 		register_block_type(
-			'gutenberg-starter/simple',
+			'gutenberg-starter/repeater',
 			array(
-				'editor_script'   => 'simple-block-editor',
-				'editor_style'    => 'simple-block-editor',
+				'editor_script'   => 'repeater-block-editor',
+				'editor_style'    => 'repeater-block-editor',
 			)
 		);
 
@@ -64,4 +64,4 @@ class SimpleBlock {
 
 }
 
-new SimpleBlock();
+new RepeaterBlock();

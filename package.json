@@ -1,6 +1,6 @@
 {
 	"name": "gutenberg-starter-blocks",
-	"version": "1.0.28",
+	"version": "1.0.95",
 	"description": "Gutenberg Starter Blocks",
 	"scripts": {
 		"i18n": "wp i18n make-pot . languages/gutenberg-starter.pot --domain=gutenberg-starter",
