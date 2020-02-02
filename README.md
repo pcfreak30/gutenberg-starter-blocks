@@ -38,3 +38,11 @@ version bump - but you can manually set this by updating the version number of y
 ### Simple Block
 
 An image with title, caption, and descriptive text.
+
+// @todo write more about this
+
+### Repeater Block
+
+A block which creates a collection of repeater blocks
+
+// @todo write more about this
