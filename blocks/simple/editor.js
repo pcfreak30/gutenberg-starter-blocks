@@ -20,7 +20,7 @@
 	// this isn't strictly necessary but saves a lot of keystrokes below:
 	const el = createElement;
 
-	wp.blocks.registerBlockType( 'gutenberg-starter/simple', {
+	const thisBlock = {
 		title:    'Simple Block',
 		icon:     'hammer',
 		category: 'common',
@@ -67,11 +67,119 @@
 			align:  false
 		},
 
-		edit: function ( props ) {
+		blockControls: function ( props ) {
+
+			const { attributes } = props;
+			const { imageId } = attributes;
+
+			return el(
+				BlockControls,
+				null,
+				el( 
+					Toolbar,
+					{},
+					imageId ? el(
+						MediaUpload,
+						{
+							value: imageId,
+							allowedTypes: [ 'image' ],
+							onSelect: ( media ) => { this.onSelectMedia( props, media ); },
+							render: ( renderProps ) => {
+								return el(
+									IconButton,
+									{
+										className: "components-toolbar__control",
+										label: __( 'Edit media', 'gutenberg-starter' ),
+										icon: 'format-image',
+										onClick: renderProps.open
+									}
+								);
+							}
+						}
+					): null
+				) 
+			);
+
+		},
+
+		inspectorControls: function( props ) {
+
+			const { attributes, setAttributes } = props;
+			const { imageCropHeight, imageDim, imageIsDark } = attributes;
+
+			return el(
+				InspectorControls,
+				null,
+				[
+					// inside InspectorControls, you can have an array of panels
+					el(
+						PanelBody,
+						{
+							'title': __( 'Block Attribute Panel', 'gutenberg-starter' ),
+						},
+						[
+							// inside each PanelBody, you create control components
+							// https://developer.wordpress.org/block-editor/components/
+							el(
+								RangeControl,
+								{
+									label: 'Image Crop Ratio (%)',
+									value: imageCropHeight || 50,
+									min: 25,
+									max: 200,
+									onChange: ( newValue ) => {
+										setAttributes( { imageCropHeight: newValue } );
+									}
+								},
+								null
+							),
+							el(
+								RangeControl,
+								{
+									label: 'Image Opacity (%)',
+									value: imageDim || 50,
+									min: 0,
+									max: 100,
+									onChange: ( newValue ) => {
+										setAttributes( { imageDim: newValue } );
+									}
+								},
+								null
+							),
+							el(
+								ToggleControl,
+								{
+									label: 'Reverse Image Text Color',
+									checked: imageIsDark,
+									onChange: ( checked ) => { setAttributes( { imageIsDark: checked } ) }
+								},
+								null
+							)
+						]
+					),
+				]
+			);
+
+		},
+
+		editorControls: function ( props ) {
 
 			const { attributes, setAttributes } = props;
 
 			const { imageCropHeight, imageId, imageUrl, imageCaption, imageDim, imageIsDark, headerTitle, blockContents } = attributes;
+
+			if ( imageCropHeight < 25 || imageCropHeight > 200 ) {
+				imageCropHeight = 50;
+			}
+
+			let imageSpacerStyle = {
+				'padding-top': imageCropHeight + '%'
+			};
+
+			let headerComponentClass = 'wp-block-gutenberg-starter-simple__header';
+			if ( imageIsDark ) {
+				headerComponentClass += ' image-is-dark';
+			}
 
 			const renderImage = function( renderProps ) {
 
@@ -93,205 +201,121 @@
 						Button,
 						{
 							className: 'select-card-btn',
-							onClick: renderProps.open,
+							onClick: ( media ) => { this.onSelectMedia( props, media ); },
 						},
 						__( 'Select Image', 'gutenberg-starter' )
-					)
+					);
 				
 				}
 
 			};
 
-			if ( imageCropHeight < 25 || imageCropHeight > 200 ) {
-				imageCropHeight = 50;
-			}
+			// here we define the block's DOM inside the editor, ...
+			// div.wp-block-gutenberg-starter-simple
+			// . div.wp-block-gutenberg-starter-simple__image
+			// . . h3: (Rich text content)
+			// . . figure
+			// . . . img: background image selected by MediaUpload component
+			// . . . component: MediaUpload (Media library chooser)
+			// . . . figcaption: RichText (content editor field)
+			// . div.wp-block-gutenberg-starter-simple__content: RichText
+			return el(
+				'div',
+				{ className: 'wp-block-gutenberg-starter-simple' },
+				[
+					el(
+						'header',
+						{ className: headerComponentClass },
+						[
+							el(
+								RichText,
+								{
+									tagName: 'h3',
+									placeholder: __( 'Content header', 'gutenberg-starter' ),
+									value: headerTitle || '',
+									onChange: ( newValue ) => {
+										setAttributes( { headerTitle: newValue } );
+									}
+								},
+								null
+							),
+							el(
+								'figure',
+								{
+									className: 'image-wrapper',
+									style: imageSpacerStyle,
+								},
+								[
+									el(
+										MediaUpload,
+										{
+											className: 'imageSelector',
+											value: imageId || null,
+											allowedTypes: [ 'image' ],
+											onSelect: onSelectMedia,
+											render: renderImage
+										},
+										null
+									),
+									el(
+										RichText,
+										{
+											tagName: 'figcaption',
+											placeholder: __( 'Write an image caption', 'gutenberg-starter' ),
+											value: imageCaption || '',
+											onChange: ( newValue ) => {
+												setAttributes( { imageCaption: newValue } );
+											}
+										},
+										null
+									)
+								]
+							)
+						]
+					),
+					el(
+						RichText,
+						{
+							tagname: 'div',
+							placeholder: __( 'Type something', 'gutenberg-starter' ),
+							value: blockContents || '',
+							className: 'wp-block-gutenberg-starter-simple__content',
+							onChange: ( newValue ) => {
+								setAttributes( { blockContents: newValue } );
+							}
+						},
+						null
+					)
+				]
+			);
 
-			let imageSpacerStyle = {
-				'padding-top': imageCropHeight + '%'
-			};
+		},
 
-			let headerComponentClass = 'wp-block-gutenberg-starter-simple__header';
-			if ( imageIsDark ) {
-				headerComponentClass += ' image-is-dark';
-			}
+		onSelectMedia: function( props, media ) {
 
-			const onSelectMedia = function( media ) {
+			props.setAttributes( {
+				imageId: media.id,
+				imageUrl: media.url
+			} );
 
-				props.setAttributes( {
-					imageId: media.id,
-					imageUrl: media.url
-				} );
+		},
 
-			}
+		edit: function ( props ) {
 
 			let blockStructure = el(
 				/**
-				 * This block has two components which must be wrapped in React's
-				 * Fragment component. The first component defines the attribute
-				 * panel (InspectorControls) and the second component defines the
-				 * block editor itself.
+				 * This block has three components which must be wrapped in React's
+				 * Fragment component. The first component defines the toolbar which
+				 * appears when the block is selected, the second component defines 
+				 * the attribute panel (InspectorControls) and the third component 
+				 * defines the block editor itself.
 				 */
 				Fragment,
 				null,
 				[
-					el(
-						BlockControls,
-						null,
-						el( 
-							Toolbar,
-							{},
-							imageId ? el(
-								MediaUpload,
-								{
-									value: imageId,
-									allowedTypes: [ 'image' ],
-									onSelect: onSelectMedia,
-									render: ( renderProps ) => {
-										return el(
-											IconButton,
-											{
-												className: "components-toolbar__control",
-												label: __( 'Edit media', 'gutenberg-starter' ),
-												icon: 'format-image',
-												onClick: renderProps.open
-											}
-										);
-									}
-								}
-							): null
-						) 
-					),
-					el(
-						InspectorControls,
-						null,
-						[
-							// inside InspectorControls, you can have an array of panels
-							el(
-								PanelBody,
-								{
-									'title': __( 'Block Attribute Panel', 'gutenberg-starter' ),
-								},
-								[
-									// inside each PanelBody, you create control components
-									// https://developer.wordpress.org/block-editor/components/
-									el(
-										RangeControl,
-										{
-											label: 'Image Crop Ratio (%)',
-											value: imageCropHeight || 50,
-											min: 25,
-											max: 200,
-											onChange: ( newValue ) => {
-												setAttributes( { imageCropHeight: newValue } );
-											}
-										},
-										null
-									),
-									el(
-										RangeControl,
-										{
-											label: 'Image Opacity (%)',
-											value: imageDim || 50,
-											min: 0,
-											max: 100,
-											onChange: ( newValue ) => {
-												setAttributes( { imageDim: newValue } );
-											}
-										},
-										null
-									),
-									el(
-										ToggleControl,
-										{
-											label: 'Reverse Image Text Color',
-											checked: imageIsDark,
-											onChange: ( checked ) => { setAttributes( { imageIsDark: checked } ) }
-										},
-										null
-									)
-								]
-							),
-						]
-					),
-
-					// here we start to define the block's DOM inside the editor, ...
-					// div.wp-block-gutenberg-starter-simple
-					// . div.wp-block-gutenberg-starter-simple__image
-					// . . h3: (Rich text content)
-					// . . figure
-					// . . . img: background image selected by MediaUpload component
-					// . . . component: MediaUpload (Media library chooser)
-					// . . . figcaption: RichText (content editor field)
-					// . div.wp-block-gutenberg-starter-simple__content: RichText
-					el(
-						'div',
-						{ className: 'wp-block-gutenberg-starter-simple' },
-						[
-							el(
-								'header',
-								{ className: headerComponentClass },
-								[
-									el(
-										RichText,
-										{
-											tagName: 'h3',
-											placeholder: __( 'Content header', 'gutenberg-starter' ),
-											value: headerTitle || '',
-											onChange: ( newValue ) => {
-												setAttributes( { headerTitle: newValue } );
-											}
-										},
-										null
-									),
-									el(
-										'figure',
-										{
-											className: 'image-wrapper',
-											style: imageSpacerStyle,
-										},
-										[
-											el(
-												MediaUpload,
-												{
-													className: 'imageSelector',
-													value: imageId || null,
-													allowedTypes: [ 'image' ],
-													onSelect: onSelectMedia,
-													render: renderImage
-												},
-												null
-											),
-											el(
-												RichText,
-												{
-													tagName: 'figcaption',
-													placeholder: __( 'Write an image caption', 'gutenberg-starter' ),
-													value: imageCaption || '',
-													onChange: ( newValue ) => {
-														setAttributes( { imageCaption: newValue } );
-													}
-												},
-												null
-											)
-										]
-									)
-								]
-							),
-							el(
-								RichText,
-								{
-									tagname: 'div',
-									placeholder: __( 'Type something', 'gutenberg-starter' ),
-									value: blockContents || '',
-									className: 'wp-block-gutenberg-starter-simple__content',
-									onChange: ( newValue ) => {
-										setAttributes( { blockContents: newValue } );
-									}
-								},
-								null
-							)
-						]
-					)
+					this.blockControls( props ),
+					this.inspectorControls( props ),
+					this.editorControls( props )
 				]
 			);
 
@@ -348,6 +372,8 @@
 			);
 
 		}
-	} );
+	};
+
+	wp.blocks.registerBlockType( 'gutenberg-starter/simple', thisBlock );
 
 }( window.wp ) );
