@@ -43,6 +43,6 @@ An image with title, caption, and descriptive text.
 
 ### Repeater Block
 
-A block which creates a collection of repeater blocks
+A block which creates a collection of Simple blocks
 
 // @todo write more about this
