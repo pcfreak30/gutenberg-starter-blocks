@@ -77,7 +77,7 @@ function gutenberg_starter_blocks_php_upgrade_notice() {
 			'
 	<div class="error notice">
 		<p>Opps! %s requires a minimum PHP version of 7.1.0. Your current version is: %s. Please contact your host/developer to upgrade.</p>
-	</div>', $info['Name'], $GLOBALS['wp_version']
+	</div>', $info['Name'], PHP_VERSION
 		)
 	);
 }
@@ -91,8 +91,8 @@ function gutenberg_starter_blocks_wp_upgrade_notice() {
 		sprintf(
 			'
 	<div class="error notice">
-		<p>Opps! %s requires a minimum Wordpress version of 5.2.0. Your current version is: %s. Please contact your host to upgrade.</p>
-	</div>', $info['Name'], PHP_VERSION
+		<p>Opps! %s requires a minimum WordPress version of 5.2.0. Your current version is: %s. Please contact your host to upgrade.</p>
+	</div>', $info['Name'], $GLOBALS['wp_version']
 		)
 	);
 }
