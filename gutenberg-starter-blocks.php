@@ -116,16 +116,16 @@ function gutenberg_starter_blocks_php_vendor_missing() {
  * We want to use a fairly modern php version, and minimum wp version for gutenberg, feel free to increase the minimum requirement
  */
 
-$php_version = version_compare( PHP_VERSION, '7.1.0' ) < 0;
-$wp_version  = function_exists( 'register_block_type' ) && version_compare( $GLOBALS['wp_version'], '5.2.0', '>=' );
+$_php_version = version_compare( PHP_VERSION, '7.1.0' ) > 0;
+$_wp_version  = function_exists( 'register_block_type' ) && version_compare( $GLOBALS['wp_version'], '5.2.0', '>=' );
 
-if ( ! $php_version ) {
+if ( ! $_php_version ) {
 	add_action( 'admin_notices', 'gutenberg_starter_blocks_php_upgrade_notice' );
 }
-if ( ! $wp_version ) {
+if ( ! $_wp_version ) {
 	add_action( 'admin_notices', 'gutenberg_starter_blocks_wp_upgrade_notice' );
 }
-if ( $php_version && $wp_version ) {
+if ( $_php_version && $_wp_version ) {
 	if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 		include_once __DIR__ . '/vendor/autoload.php';
 		add_action( 'plugins_loaded', 'gutenberg_starter_blocks_init', 11 );
@@ -135,3 +135,4 @@ if ( $php_version && $wp_version ) {
 		add_action( 'admin_notices', 'gutenberg_starter_blocks_php_vendor_missing' );
 	}
 }
+unset( $_php_version, $_wp_version );
