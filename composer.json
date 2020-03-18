@@ -1,0 +1,12 @@
+{
+    "name": "derrick/gutenberg_starter_blocks",
+    "type": "wordpress-plugin",
+    "require": {
+        "composepress/core": "0.8.3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gutenberg_Starter_Blocks\\": "src\\"
+        }
+    }
+}
